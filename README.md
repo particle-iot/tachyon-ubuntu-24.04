@@ -4,6 +4,12 @@
 
 TODO add documentation and build scripts for chroot/rootfs. This is done with [livecd-rootfs](https://launchpad.net/livecd-rootfs).
 
+### Kernel
+
+Kernel used is https://git.codelinaro.org/clo/le/canonical-kernel/ubuntu/source/linux-qcom/noble/-/tree/canonical/master-next?ref_type=heads.
+ 
+This Canonical/Qualcomm 24.04 (Noble) Ubuntu kernel with a bunch of cherry-picks from non-mainline Qualcomm fork.
+
 ### What works for now
 
 1. WiFi (sometimes doesn't probe)

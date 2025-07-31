@@ -1,0 +1,58 @@
+version: 2.1
+
+tag_filters: &tag_filters
+  filters:
+    tags:
+      only:
+        - /.+/
+
+orbs:
+  particle-artifact: particle-iot/particle-artifact@1
+  aws-cli: circleci/aws-cli@4.1.2
+  docker: circleci/docker@2
+
+commands:
+  build-image:
+    parameters:
+      image:
+        type: string
+    steps:
+      - checkout
+      - particle-artifact/install-deb-dependencies
+      - docker/check:
+          docker-username: DOCKERHUB_USERNAME
+          docker-password: DOCKERHUB_PASSWORD
+      - run: sudo apt install -y qemu-user-static binfmt-support
+      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
+      - run:
+          command: docker run --network=host -v $(pwd):/build --rm --privileged ubuntu:24.04 /bin/bash -c '/build/ci-scripts/build.sh << parameters.image >>'
+          no_output_timeout: 60m
+      - run: ls -la build || true
+      - run: ls -la build/chroot || true
+
+jobs:
+  build-headless:
+    machine: true
+    resource_class: "particle-iot/tachyon-build-farm-xlarge"
+    steps:
+      - build-image:
+          image: headless
+  build-desktop:
+    machine: true
+    resource_class: "particle-iot/tachyon-build-farm-xlarge"
+    steps:
+      - build-image:
+          image: desktop
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-headless:
+          context:
+            - particle-ci-private
+          <<: *tag_filters
+      - build-desktop:
+          context:
+            - particle-ci-private
+          <<: *tag_filters

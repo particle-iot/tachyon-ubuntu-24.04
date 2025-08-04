@@ -63,13 +63,13 @@ commands:
 jobs:
   build-headless:
     machine: true
-    resource_class: "particle-iot/tachyon-build-farm-xlarge"
+    resource_class: "particle-iot/linux-build-arm64-2404-i8g-large"
     steps:
       - build-image:
           image: headless
   build-desktop:
     machine: true
-    resource_class: "particle-iot/tachyon-build-farm-xlarge"
+    resource_class: "particle-iot/linux-build-arm64-2404-i8g-large"
     steps:
       - build-image:
           image: desktop
@@ -172,7 +172,6 @@ jobs:
                     echo "No PR number found, skipping"
                   fi
 
-
 workflows:
   version: 2
   build:
@@ -197,4 +196,3 @@ workflows:
             - build-headless
             - build-desktop
           context: particle-ci-private
-

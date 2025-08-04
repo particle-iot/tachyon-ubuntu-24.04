@@ -21,11 +21,6 @@ commands:
       - checkout
       - particle-artifact/install-deb-dependencies
       - jq/install
-      - aws-cli/setup:
-          profile_name: default
-          region: us-east-1
-          role_arn: arn:aws:iam::713073884108:role/circleci-deploy-tachyon-ci
-          role_session_name: circleci
       - docker/check:
           docker-username: DOCKERHUB_USERNAME
           docker-password: DOCKERHUB_PASSWORD
@@ -41,6 +36,11 @@ commands:
           command: |
             cat release-metadata/release.env >> $BASH_ENV
             echo "Loaded release metadata"
+      - aws-cli/setup:
+          profile_name: default
+          region: us-east-1
+          role_arn: arn:aws:iam::713073884108:role/circleci-deploy-tachyon-ci
+          role_session_name: circleci
       - run:
           name: Create package from raw image
           command: |

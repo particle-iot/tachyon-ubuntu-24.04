@@ -1,0 +1,16 @@
+--- /usr/lib/live/build/lb_binary_package-lists.orig	2025-08-02 19:03:23.135733322 +0000
++++ /usr/lib/live/build/lb_binary_package-lists	2025-08-03 09:24:34.560561075 +0000
+@@ -88,8 +88,13 @@
+ 			# Generate package list
+ 			Expand_packagelist "${LIST}" "config/package-lists" > chroot/root/"$(basename ${LIST})"
+ 
++			mount -o bind /run chroot/run
++			mount -t proc proc chroot/proc
+ 			# Downloading additional packages
++			Chroot chroot "apt-get ${APT_OPTIONS} update"
+ 			Chroot chroot "xargs --arg-file=/root/$(basename ${LIST}) apt-get ${APT_OPTIONS} -o Dir::Cache=/binary.deb --download-only install"
++			umount chroot/run
++			umount chroot/proc
+ 
+ 			# Remove package list
+ 			rm chroot/root/"$(basename ${LIST})"

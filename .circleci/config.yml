@@ -49,7 +49,7 @@ commands:
             S3_BUCKET=tachyon-ci-particle-io-20241217204603468000000002
             CLOUDFRONT_URL=https://tachyon-ci.particle.io
 
-            RELEASE_NAME="tachyon-ubuntu-24.04-<< parameters.image >>-$RELEASE_TAG.squashfs.xz"
+            export RELEASE_NAME="tachyon-ubuntu-24.04-<< parameters.image >>-$RELEASE_TAG.squashfs.xz"
             ARTIFACT_PATH=$ARTIFACT_BASE_PATH/$RELEASE_NAME
             aws s3 cp build/rootfs.squashfs.xz "s3://$S3_BUCKET/$ARTIFACT_PATH"
             export ARTIFACT_URL=$CLOUDFRONT_URL/$ARTIFACT_PATH
@@ -140,10 +140,10 @@ jobs:
       - run:
           name: Generate release metadata
           command: |
-            export SCHEMA_URL=https://tachyon-ci.particle.io/schema/release_metadata_v1.json
-            jq --arg schema_url "$SCHEMA_URL" -s '{"$schema": $schema_url, "builds": .}' release-metadata/*.json > release-metadata/release_metadata.json
+            export SCHEMA_URL=https://tachyon-ci.particle.io/schema/artifact_metadata_v1.json
+            jq --arg schema_url "$SCHEMA_URL" -s '{"$schema": $schema_url, "builds": .}' release-metadata/*.json > release-metadata/artifact_metadata.json
 
-            RELEASE_NOTES="$(jq -r '.builds[] | "[Download \(.variant) rootfs image from CDN](\(.artifacts[0].artifact_url))"' release-metadata/release_metadata.json)"
+            RELEASE_NOTES="$(jq -r '.builds[] | "[Download \(.variant) rootfs image from CDN](\(.artifacts[0].artifact_url))"' release-metadata/artifact_metadata.json)"
             echo "export RELEASE_NOTES=\"$RELEASE_NOTES\"" >> $BASH_ENV
       - when:
           condition:
@@ -156,7 +156,7 @@ jobs:
                 command: |
                   gh auth status
                   gh release create $RELEASE_TAG --target $(git rev-parse HEAD) --generate-notes $PRERELEASE_ARGS --notes "$RELEASE_NOTES"
-                  gh release upload $RELEASE_TAG release-metadata/release_metadata.json
+                  gh release upload $RELEASE_TAG release-metadata/artifact_metadata.json
       - when:
           condition:
             not:

@@ -9,7 +9,6 @@ tag_filters: &tag_filters
 orbs:
   particle-artifact: particle-iot/particle-artifact@1
   aws-cli: circleci/aws-cli@4.1.2
-  docker: circleci/docker@2
   jq: circleci/jq@3
 
 commands:
@@ -27,13 +26,8 @@ commands:
           role_arn: arn:aws:iam::713073884108:role/circleci-deploy-tachyon-ci
           role_session_name: circleci
           session_duration: "10800"
-      - docker/check:
-          docker-username: DOCKERHUB_USERNAME
-          docker-password: DOCKERHUB_PASSWORD
-      - run: sudo apt install -y qemu-user-static binfmt-support
-      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
       - run:
-          command: docker run --network=host -v $(pwd):/build --rm --privileged ubuntu:24.04 /bin/bash -c '/build/ci-scripts/build.sh << parameters.image >>'
+          command: sudo bash -c 'ci-scripts/build.sh << parameters.image >>'
           no_output_timeout: 60m
       - attach_workspace:
           at: release-metadata

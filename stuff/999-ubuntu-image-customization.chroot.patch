@@ -1,0 +1,11 @@
+--- livecd-rootfs/live-build/ubuntu-cpc/hooks.d/chroot/999-ubuntu-image-customization.chroot.orig	2025-08-25 19:48:55.910622084 +0000
++++ livecd-rootfs/live-build/ubuntu-cpc/hooks.d/chroot/999-ubuntu-image-customization.chroot	2025-08-25 19:53:12.449601804 +0000
+@@ -8,7 +8,7 @@
+ # special cloud-init configuration that should not be happening for cloud
+ # cases. This check should be changed to a per-MODEL/per-SUBARCH check once
+ # we support building cloud images via ubuntu-image.
+-if [ "$IMAGEFORMAT" == "none" ]; then
++if [ "$IMAGEFORMAT" == "none" ] || [[ "$IMAGE_TARGETS" =~ "non-cloud" ]]; then
+     # If the cloud does not provide a meta-data service this should be run
+     # This will setup a nocloud datasource on the boot partition.
+     # This is the default behavior for our ubuntu-image built preinstalled

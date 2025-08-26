@@ -39,13 +39,12 @@ commands:
       - run:
           name: Create package from raw image
           command: |
-
             S3_BUCKET=tachyon-ci-particle-io-20241217204603468000000002
             CLOUDFRONT_URL=https://tachyon-ci.particle.io
 
-            export RELEASE_NAME="tachyon-ubuntu-24.04-<< parameters.image >>-$RELEASE_TAG.squashfs.xz"
+            export RELEASE_NAME="tachyon-ubuntu-24.04-<< parameters.image >>-$RELEASE_TAG.img.xz"
             ARTIFACT_PATH=$ARTIFACT_BASE_PATH/$RELEASE_NAME
-            aws s3 cp build/rootfs.squashfs.xz "s3://$S3_BUCKET/$ARTIFACT_PATH"
+            aws s3 cp build/rootfs.img.xz "s3://$S3_BUCKET/$ARTIFACT_PATH"
             export ARTIFACT_URL=$CLOUDFRONT_URL/$ARTIFACT_PATH
 
             jq -n '{ release_name: env.RELEASE_NAME, version: env.RELEASE_TAG, variant: "<< parameters.image >>", distribution: "ubuntu", distribution_version: "24.04", artifacts: [ {artifact_url: env.ARTIFACT_URL} ]}' > release-metadata/<< parameters.image >>_metadata.json

@@ -4,9 +4,11 @@ case "$1" in
     desktop)
         export PROJECT=ubuntu
         export SUBPROJECT=desktop-preinstalled
+        export IMAGE_SIZE=$((5*1024*1024*1024)) # 4GB
         ;;
     headless)
         export PROJECT=ubuntu-cpc
+        export IMAGE_SIZE=$((4*1024*1024*1024)) # 3GB
         ;;
     *)
         echo "Unknown image type"
@@ -22,9 +24,20 @@ cd "$DIR"
 
 export DEBIAN_FRONTEND=noninteractive
 
+apt-mark hold circleci-runner
 apt-get update -y
 apt-get upgrade -y
 apt-get install livecd-rootfs qemu-user-static binfmt-support -y
+
+# Patch buggy minimize-manual
+patch /usr/share/livecd-rootfs/minimize-manual $DIR/stuff/minimize-manual.patch
+# Patch lb_chroot_apt to retry
+patch /usr/lib/live/build/lb_chroot_apt $DIR/stuff/lb_chroot_apt.patch
+
+patch /usr/lib/live/build/lb_binary_package-lists $DIR/stuff/lb_binary_package-lists.patch
+
+patch /usr/share/livecd-rootfs/live-build/ubuntu-cpc/hooks.d/chroot/999-ubuntu-image-customization.chroot $DIR/stuff/999-ubuntu-image-customization.chroot.patch
+patch /usr/share/livecd-rootfs/live-build/auto/config $DIR/stuff/config.patch
 
 mkdir build
 cd build
@@ -38,8 +51,10 @@ export RELEASE_VERSION="24.04"
 export KERNEL_FLAVOR="qcom"
 
 export ARCH=arm64
-export IMAGEFORMAT=none
-export IMAGE_TARGETS=disk-image-non-cloud
+export IMAGEFORMAT=ext4
+export IMAGE_HAS_HARDCODED_PASSWORD=1
+export IMAGE_FORCE_HOOKS=true
+export IMAGE_TARGETS=disk-image-non-cloud,disk1-img-xz
 
 unset DEBIAN_FRONTEND
 
@@ -87,15 +102,12 @@ cp -a config/archives/particle.list.chroot config/archives/particle.list.binary
 
 wget -O config/archives/particle.key https://packages.particle.io/public-keyring.gpg
 
-# Patch buggy minimize-manual
-patch /usr/share/livecd-rootfs/minimize-manual $DIR/stuff/minimize-manual.patch
-# Patch lb_chroot_apt to retry
-patch /usr/lib/live/build/lb_chroot_apt $DIR/stuff/lb_chroot_apt.patch
-
-patch /usr/lib/live/build/lb_binary_package-lists $DIR/stuff/lb_binary_package-lists.patch
-
 lb build --verbose --debug
 
-(cd chroot && mksquashfs . $DIR/build/rootfs.squashfs.xz -no-progress -xattrs -comp xz)
+if [ "$PROJECT" == "ubuntu" ]; then
+    xz -T4 -c binary/boot/disk-uefi.ext4 > $DIR/build/rootfs.img.xz
+else
+    mv livecd.ubuntu-cpc.disk1.img.xz $DIR/build/rootfs.img.xz
+fi
 
 exit 0

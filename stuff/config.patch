@@ -1,0 +1,16 @@
+--- livecd-rootfs/live-build/auto/config.orig	2025-08-25 20:00:12.427343013 +0000
++++ livecd-rootfs/live-build/auto/config	2025-08-25 20:00:35.021346345 +0000
+@@ -1509,9 +1509,11 @@
+ 			esac
+ 		fi
+ 
+-		if [ "$IMAGEFORMAT" = none ]; then
+-			rm -f config/hooks/*.binary*
+-		fi
++                if [ "$IMAGEFORMAT" = none ]; then
++                        if [ "$IMAGE_FORCE_HOOKS" != "true" ]; then
++                                rm -f config/hooks/*.binary*
++                        fi
++                fi
+ 		;;
+ esac

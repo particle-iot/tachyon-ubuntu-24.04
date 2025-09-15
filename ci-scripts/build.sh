@@ -24,7 +24,9 @@ cd "$DIR"
 
 export DEBIAN_FRONTEND=noninteractive
 
-apt-mark hold circleci-runner
+if dpkg -s circleci-runner >/dev/null 2>&1; then
+    apt-mark hold circleci-runner
+fi
 apt-get update -y
 apt-get upgrade -y
 apt-get install livecd-rootfs qemu-user-static binfmt-support -y

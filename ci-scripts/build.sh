@@ -50,7 +50,7 @@ export SUITE=noble
 
 export RELEASE_NAME="Ubuntu 24.04 LTS (Noble Nombat)"
 export RELEASE_VERSION="24.04"
-export KERNEL_FLAVOR="qcom"
+export KERNEL_FLAVOR="particle"
 
 export ARCH=arm64
 export IMAGEFORMAT=ext4

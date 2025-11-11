@@ -91,8 +91,6 @@ lb config \
     --parent-mirror-binary "${APT_MIRROR}" \
     --mirror-chroot "${APT_MIRROR}" \
     --parent-mirror-chroot "${APT_MIRROR}" \
-    --mirror-chroot-security "${APT_MIRROR}" \
-    --parent-mirror-chroot-security "${APT_MIRROR}" \
     --keyring-packages ubuntu-keyring \
     --linux-flavours "${KERNEL_FLAVOR}" \
     --initramfs none \
@@ -113,6 +111,8 @@ EOF
 cp -a config/archives/particle.list.chroot config/archives/particle.list.binary
 
 wget -O config/archives/particle.key https://packages.particle.io/public-keyring.gpg
+
+touch config/universe-enabled
 
 lb build --verbose --debug
 

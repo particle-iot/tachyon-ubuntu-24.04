@@ -58,6 +58,12 @@ export IMAGE_HAS_HARDCODED_PASSWORD=1
 export IMAGE_FORCE_HOOKS=true
 export IMAGE_TARGETS=disk-image-non-cloud,disk1-img-xz
 
+if [[ "${CIRCLECI:-}" == "true" ]]; then
+    export APT_MIRROR="http://us-east-1.ec2.ports.ubuntu.com"
+else
+    export APT_MIRROR="http://ports.ubuntu.com"
+fi
+
 unset DEBIAN_FRONTEND
 
 sed -i '1s/^/set -x\n/' $HOME/.bashrc
@@ -75,14 +81,14 @@ lb config \
     --bootstrap-qemu-static /usr/bin/qemu-aarch64-static \
     --archive-areas "main restricted universe multiverse" \
     --parent-archive-areas "main restricted universe multiverse" \
-    --mirror-bootstrap "http://ports.ubuntu.com" \
-    --parent-mirror-bootstrap "http://ports.ubuntu.com" \
-    --mirror-chroot-security "http://ports.ubuntu.com" \
-    --parent-mirror-chroot-security "http://ports.ubuntu.com" \
-    --mirror-binary-security "http://ports.ubuntu.com" \
-    --parent-mirror-binary-security "http://ports.ubuntu.com" \
-    --mirror-binary "http://ports.ubuntu.com" \
-    --parent-mirror-binary "http://ports.ubuntu.com" \
+    --mirror-bootstrap "${APT_MIRROR}" \
+    --parent-mirror-bootstrap "${APT_MIRROR}" \
+    --mirror-chroot-security "${APT_MIRROR}" \
+    --parent-mirror-chroot-security "${APT_MIRROR}" \
+    --mirror-binary-security "${APT_MIRROR}" \
+    --parent-mirror-binary-security "${APT_MIRROR}" \
+    --mirror-binary "${APT_MIRROR}" \
+    --parent-mirror-binary "${APT_MIRROR}" \
     --keyring-packages ubuntu-keyring \
     --linux-flavours "${KERNEL_FLAVOR}" \
     --initramfs none \

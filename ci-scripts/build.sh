@@ -59,7 +59,7 @@ export IMAGE_FORCE_HOOKS=true
 export IMAGE_TARGETS=disk-image-non-cloud,disk1-img-xz
 
 if [[ "${CIRCLECI:-}" == "true" ]]; then
-    export APT_MIRROR="http://us-east-1.ec2.ports.ubuntu.com"
+    export APT_MIRROR="http://us-east-1.ec2.ports.ubuntu.com/ubuntu-ports"
 else
     export APT_MIRROR="http://ports.ubuntu.com"
 fi

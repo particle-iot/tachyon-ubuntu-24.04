@@ -40,6 +40,7 @@ patch /usr/lib/live/build/lb_binary_package-lists $DIR/stuff/lb_binary_package-l
 
 patch /usr/share/livecd-rootfs/live-build/ubuntu-cpc/hooks.d/chroot/999-ubuntu-image-customization.chroot $DIR/stuff/999-ubuntu-image-customization.chroot.patch
 patch /usr/share/livecd-rootfs/live-build/auto/config $DIR/stuff/config.patch
+patch /usr/share/livecd-rootfs/live-build/ubuntu-cpc/hooks.d/base/disk-image-uefi.binary $DIR/stuff/disk-image-uefi.patch
 
 mkdir build
 cd build

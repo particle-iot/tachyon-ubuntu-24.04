@@ -1,0 +1,16 @@
+--- /usr/share/livecd-rootfs/live-build/ubuntu-cpc/hooks.d/base/disk-image-uefi.binary.orig	2025-11-11 16:39:53.327987210 +0000
++++ /usr/share/livecd-rootfs/live-build/ubuntu-cpc/hooks.d/base/disk-image-uefi.binary	2025-11-11 16:40:53.673059712 +0000
+@@ -14,11 +14,11 @@
+ 
+ case "$ARCH" in
+   amd64|arm64|armhf)
+-    # 3.5 GiB
++    # 4.5 GiB
+     # Since Kinetic amd64 need more then the default 2.2G
+     # Since Jammy armhf need more then the default 2.2G
+     # Since Mantic arm64 need more then the default 2.2G
+-    IMAGE_SIZE=3758096384 # bump to 3.5G (3584*1024**2);
++    IMAGE_SIZE=4831838208 # bump to 4.5G (4608*1024**2);
+     ;;
+   riscv64)
+     # 4.5 GiB

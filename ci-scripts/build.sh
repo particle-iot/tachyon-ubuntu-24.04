@@ -40,6 +40,7 @@ patch /usr/lib/live/build/lb_binary_package-lists $DIR/stuff/lb_binary_package-l
 
 patch /usr/share/livecd-rootfs/live-build/ubuntu-cpc/hooks.d/chroot/999-ubuntu-image-customization.chroot $DIR/stuff/999-ubuntu-image-customization.chroot.patch
 patch /usr/share/livecd-rootfs/live-build/auto/config $DIR/stuff/config.patch
+patch /usr/share/livecd-rootfs/live-build/ubuntu-cpc/hooks.d/base/disk-image-uefi.binary $DIR/stuff/disk-image-uefi.patch
 
 mkdir build
 cd build
@@ -50,13 +51,19 @@ export SUITE=noble
 
 export RELEASE_NAME="Ubuntu 24.04 LTS (Noble Nombat)"
 export RELEASE_VERSION="24.04"
-export KERNEL_FLAVOR="qcom"
+export KERNEL_FLAVOR="particle"
 
 export ARCH=arm64
 export IMAGEFORMAT=ext4
 export IMAGE_HAS_HARDCODED_PASSWORD=1
 export IMAGE_FORCE_HOOKS=true
 export IMAGE_TARGETS=disk-image-non-cloud,disk1-img-xz
+
+if [[ "${CIRCLECI:-}" == "true" ]]; then
+    export APT_MIRROR="http://us-east-1.ec2.ports.ubuntu.com/ubuntu-ports"
+else
+    export APT_MIRROR="http://ports.ubuntu.com"
+fi
 
 unset DEBIAN_FRONTEND
 
@@ -75,14 +82,16 @@ lb config \
     --bootstrap-qemu-static /usr/bin/qemu-aarch64-static \
     --archive-areas "main restricted universe multiverse" \
     --parent-archive-areas "main restricted universe multiverse" \
-    --mirror-bootstrap "http://ports.ubuntu.com" \
-    --parent-mirror-bootstrap "http://ports.ubuntu.com" \
-    --mirror-chroot-security "http://ports.ubuntu.com" \
-    --parent-mirror-chroot-security "http://ports.ubuntu.com" \
-    --mirror-binary-security "http://ports.ubuntu.com" \
-    --parent-mirror-binary-security "http://ports.ubuntu.com" \
-    --mirror-binary "http://ports.ubuntu.com" \
-    --parent-mirror-binary "http://ports.ubuntu.com" \
+    --mirror-bootstrap "${APT_MIRROR}" \
+    --parent-mirror-bootstrap "${APT_MIRROR}" \
+    --mirror-chroot-security "${APT_MIRROR}" \
+    --parent-mirror-chroot-security "${APT_MIRROR}" \
+    --mirror-binary-security "${APT_MIRROR}" \
+    --parent-mirror-binary-security "${APT_MIRROR}" \
+    --mirror-binary "${APT_MIRROR}" \
+    --parent-mirror-binary "${APT_MIRROR}" \
+    --mirror-chroot "${APT_MIRROR}" \
+    --parent-mirror-chroot "${APT_MIRROR}" \
     --keyring-packages ubuntu-keyring \
     --linux-flavours "${KERNEL_FLAVOR}" \
     --initramfs none \
@@ -103,6 +112,8 @@ EOF
 cp -a config/archives/particle.list.chroot config/archives/particle.list.binary
 
 wget -O config/archives/particle.key https://packages.particle.io/public-keyring.gpg
+
+touch config/universe-enabled
 
 lb build --verbose --debug
 

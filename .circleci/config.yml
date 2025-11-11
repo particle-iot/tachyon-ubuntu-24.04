@@ -25,7 +25,7 @@ commands:
           role_session_name: circleci
           session_duration: "10800"
       - run:
-          command: sudo bash -c 'ci-scripts/build.sh << parameters.image >>'
+          command: sudo env CIRCLECI=true bash -c 'ci-scripts/build.sh << parameters.image >>'
           no_output_timeout: 60m
       - attach_workspace:
           at: release-metadata

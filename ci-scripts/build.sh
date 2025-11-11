@@ -89,6 +89,10 @@ lb config \
     --parent-mirror-binary-security "${APT_MIRROR}" \
     --mirror-binary "${APT_MIRROR}" \
     --parent-mirror-binary "${APT_MIRROR}" \
+    --mirror-chroot "${APT_MIRROR}" \
+    --parent-mirror-chroot "${APT_MIRROR}" \
+    --mirror-chroot-security "${APT_MIRROR}" \
+    --parent-mirror-chroot-security "${APT_MIRROR}" \
     --keyring-packages ubuntu-keyring \
     --linux-flavours "${KERNEL_FLAVOR}" \
     --initramfs none \

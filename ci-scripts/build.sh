@@ -42,6 +42,8 @@ patch /usr/share/livecd-rootfs/live-build/ubuntu-cpc/hooks.d/chroot/999-ubuntu-i
 patch /usr/share/livecd-rootfs/live-build/auto/config $DIR/stuff/config.patch
 patch /usr/share/livecd-rootfs/live-build/ubuntu-cpc/hooks.d/base/disk-image-uefi.binary $DIR/stuff/disk-image-uefi.patch
 
+patch /usr/share/livecd-rootfs/live-build/functions $DIR/stuff/functions.patch
+
 mkdir build
 cd build
 

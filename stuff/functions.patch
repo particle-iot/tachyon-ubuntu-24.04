@@ -1,0 +1,11 @@
+--- /usr/share/livecd-rootfs/live-build/functions.orig	2025-12-02 22:08:21.139410658 +0000
++++ /usr/share/livecd-rootfs/live-build/functions	2025-12-02 22:08:38.196473030 +0000
+@@ -75,7 +75,7 @@
+ make_ext4_partition() {
+     device="$1"
+     label=${fs_label:+-L "${fs_label}"}
+-    mkfs.ext4 -F -b 4096 -i 8192 -m 0 ${label} -E resize=536870912 "$device"
++    mkfs.ext4 -F -b 4096 -i 8192 -m 0 ${label} -E resize=$((536870912 * 2)) "$device"
+ }
+ 
+ mount_image() {

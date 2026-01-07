@@ -100,18 +100,17 @@ lb config \
     --system normal
 
 # Add some default packages
-cat >> config/package-lists/particle.list.chroot <<EOF
+cat >> config/package-lists/particle-ubuntu.list.chroot <<EOF
 software-properties-common
 network-manager
 EOF
-cp -a config/package-lists/particle.list.chroot config/package-lists/particle.list.binary
+cp -a config/package-lists/particle-ubuntu.list.chroot config/package-lists/particle-ubuntu.list.binary
 
 # Add particle repo
-cat >> config/archives/particle.list.chroot <<EOF
+cat >> config/archives/particle-ubuntu.list.chroot <<EOF
 deb [signed-by=/etc/apt/trusted.gpg.d/particle.key.gpg] http://packages.particle.io/ubuntu noble-stable main
-deb-src [signed-by=/etc/apt/trusted.gpg.d/particle.key.gpg] http://packages.particle.io/ubuntu noble-stable main
 EOF
-cp -a config/archives/particle.list.chroot config/archives/particle.list.binary
+cp -a config/archives/particle-ubuntu.list.chroot config/archives/particle-ubuntu.list.binary
 
 wget -O config/archives/particle.key https://packages.particle.io/public-keyring.gpg
 

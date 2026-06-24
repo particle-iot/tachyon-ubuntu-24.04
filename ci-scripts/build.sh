@@ -61,7 +61,10 @@ export IMAGE_HAS_HARDCODED_PASSWORD=1
 export IMAGE_FORCE_HOOKS=true
 export IMAGE_TARGETS=disk-image-non-cloud,disk1-img-xz
 
-if [[ "${CIRCLECI:-}" == "true" ]]; then
+if [[ -n "${APT_MIRROR:-}" ]]; then
+    # Honour an explicit override from the CI environment
+    export APT_MIRROR
+elif [[ "${CIRCLECI:-}" == "true" || "${GITHUB_ACTIONS:-}" == "true" ]]; then
     export APT_MIRROR="http://us-east-1.ec2.ports.ubuntu.com/ubuntu-ports"
 else
     export APT_MIRROR="http://ports.ubuntu.com"
